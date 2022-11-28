@@ -23,15 +23,15 @@ CREATE TABLE CUSTOMER
 
 
 INSERT INTO CUSTOMER VALUES (2209,'Amaya','Lucero','AmayaR@gmail.com','Newham Way',074589645, 5, 14698, 12347854);
-INSERT INTO CUSTOMER VALUES (2210,'Frankie','Decker','Frankie@gmail.com','Abbey Road',07458965, 8, 14578, 74896753);
-INSERT INTO CUSTOMER VALUES (2211,'MATTEW','ROUGHTON','MattR@gmail.com','Powis Street',0748665, 12, 13457, 48597484);
-INSERT INTO CUSTOMER VALUES (2212,'NOAH','JOHNSON','NJohnson@gmil.com','brighton road',04576455, 10, 12348, 12345678);
-INSERT INTO CUSTOMER VALUES (2213,'XIAO','MINN','XMing@gmail.com','Penny Lane',04578452, 9, 45789, 32145687);
+INSERT INTO CUSTOMER VALUES (2210,'Frankie','Decker','Frankie@gmail.com','Abbey Road',07458965, 2, 14578, 74896753);
+INSERT INTO CUSTOMER VALUES (2211,'MATTEW','ROUGHTON','MattR@gmail.com','Powis Street',0748665, 1, 13457, 48597484);
+INSERT INTO CUSTOMER VALUES (2212,'NOAH','JOHNSON','NJohnson@gmil.com','brighton road',04576455, 0, 12348, 12345678);
+INSERT INTO CUSTOMER VALUES (2213,'XIAO','MINN','XMing@gmail.com','Penny Lane',04578452, 4, 45789, 32145687);
 INSERT INTO CUSTOMER VALUES (2014,'Mehmet ','Larson','MehmetL@gmail.com','Twickenahm Way',07457897, 5, 42567, 23456745);
-INSERT INTO CUSTOMER VALUES (2785,'Lorraine ','Brown','LorrBrown@gmail.com','Saville Row',07785545, 8, 98632, 45673642);
-INSERT INTO CUSTOMER VALUES (2899,'Rhea ','Zunica','Rhea@gmail.com','Chicksand Street',07458245, 9, 12456, 12345674);
-INSERT INTO CUSTOMER VALUES (2877,'Louie','Richmond','Louie@gmil.com','Artillery Lane',07856897, 10, 12458, 56753454);
-INSERT INTO CUSTOMER VALUES (2568,'Kristen ','Ashley','Krist@gmail.com','Gresham Street',0124578, 9, 98574, 89654357);
+INSERT INTO CUSTOMER VALUES (2785,'Lorraine ','Brown','LorrBrown@gmail.com','Saville Row',07785545, 6, 98632, 45673642);
+INSERT INTO CUSTOMER VALUES (2899,'Rhea ','Zunica','Rhea@gmail.com','Chicksand Street',07458245, 3, 12456, 12345674);
+INSERT INTO CUSTOMER VALUES (2877,'Louie','Richmond','Louie@gmil.com','Artillery Lane',07856897, 2, 12458, 56753454);
+INSERT INTO CUSTOMER VALUES (2568,'Kristen ','Ashley','Krist@gmail.com','Gresham Street',0124578, 5, 98574, 89654357);
 
 
 SELECT * FROM CUSTOMER;
@@ -159,22 +159,23 @@ CREATE TABLE VEHICLE (
     Max_Price Number(8, 2),
     Vehicle_Date DATE,
     City VARCHAR(15),
+    Agent_Rank VARCHAR(6),
     Branch_ID Number(10),
     PRIMARY KEY (Vehicle_ID)
 );
 
 
 
-INSERT INTO VEHICLE VALUES (6897, 'Sedan', 920.99, 13000.00, 2200.00, '14-JUN-2002', 'London', 84575);
-INSERT INTO VEHICLE VALUES (6586, 'Coupe', 1200.25, 15650.60, 3600.00, '22-MAY-2009', 'Birmingham', 98657);
-INSERT INTO VEHICLE VALUES (2114, 'Sedan', 1000.00, 12900.99, 2900.00, '16-OCT-2012', 'Manchester', 54896);
-INSERT INTO VEHICLE VALUES (4587, 'Coupe', 1150.50, 14000.00, 5200.00, '02-FEB-2018', 'London', 48945);
-INSERT INTO VEHICLE VALUES (1357, 'Sedan', 950.20, 12800.00, 2650.00, '12-MAR-2010', 'Birmingham', 23545);
-INSERT INTO VEHICLE VALUES (4578, 'Sedan', 880.99, 11000.00, 1500.00, '22-JUN-2002', 'London', 99654);
-INSERT INTO VEHICLE VALUES (8856, 'Coupe', 780.25, 12000.60, 1400.00, '14-MAY-2009', 'Birmingham', 87565);
-INSERT INTO VEHICLE VALUES (4535, 'Sedan', 890.00, 12400.99, 2000.00, '02-OCT-2012', 'Manchester', 56877);
-INSERT INTO VEHICLE VALUES (5578, 'Coupe', 1050.50, 12800.00, 2200.00, '06-FEB-2018', 'London', 78654);
-INSERT INTO VEHICLE VALUES (9988, 'Sedan', 899.20, 11200.00, 550.00, '08-MAR-2010', 'Birmingham', 87865);
+INSERT INTO VEHICLE VALUES (6897, 'Sedan', 920.99, 13000.00, 2200.00, '14-JUN-2002', 'London', 'Bronze', 84575);
+INSERT INTO VEHICLE VALUES (6586, 'Coupe', 1200.25, 15650.60, 3600.00, '22-MAY-2009', 'Birmingham', 'Gold', 98657);
+INSERT INTO VEHICLE VALUES (2114, 'Sedan', 1000.00, 12900.99, 2900.00, '16-OCT-2012', 'Manchester', 'Bronze', 54896);
+INSERT INTO VEHICLE VALUES (4587, 'Coupe', 1150.50, 14000.00, 5200.00, '02-FEB-2018', 'London', 'Bronze', 48945);
+INSERT INTO VEHICLE VALUES (1357, 'Sedan', 950.20, 12800.00, 2650.00, '12-MAR-2010', 'Birmingham', 'Gold', 23545);
+INSERT INTO VEHICLE VALUES (4578, 'Sedan', 880.99, 11000.00, 1500.00, '22-JUN-2002', 'London', 'Bronze', 99654);
+INSERT INTO VEHICLE VALUES (8856, 'Coupe', 780.25, 12000.60, 1400.00, '14-MAY-2009', 'Birmingham', 'Bronze', 87565);
+INSERT INTO VEHICLE VALUES (4535, 'Sedan', 890.00, 12400.99, 2000.00, '02-OCT-2012', 'Manchester', 'Gold', 56877);
+INSERT INTO VEHICLE VALUES (5578, 'Coupe', 1050.50, 12800.00, 2200.00, '06-FEB-2018', 'London', 'Bronze', 78654);
+INSERT INTO VEHICLE VALUES (9988, 'Sedan', 899.20, 11200.00, 550.00, '08-MAR-2010', 'Birmingham', 'Gold', 87865);
 
 
 
@@ -189,23 +190,23 @@ CREATE TABLE AGENTS (
     Agents_ID Number(10),
     Agents_Rank VARCHAR(10),
     Email VARCHAR(25),
-    Timeslot DATE,
+    Num_Timeslot Number(2),
     Customer_ID Number(10),
     Vehicle_ID Number(10),
     Branch_ID Number(10),
     PRIMARY KEY (Agents_ID)
 );
 
-INSERT INTO AGENTS VALUES (12456,'Bronze','agent001@gmail.com', '15-DEC-2022', 2210, 1357, 54896);
-INSERT INTO AGENTS VALUES (12348,'Gold','agent002@gmail.com', '18-DEC-2022', 2209, 4587, 98657);
-INSERT INTO AGENTS VALUES (13457,'Bronze','agent003@gmail.com', '12-DEC-2022', 2212, 6586, 48945);
-INSERT INTO AGENTS VALUES (14578,'Silver','agent004@gmail.com', '15-DEC-2022', 2211, 2114, 84575);
-INSERT INTO AGENTS VALUES (14698,'Bronze','agent005@gmail.com', '22-DEC-2022', 2213, 6897, 48945);
-INSERT INTO AGENTS VALUES (98574,'Bronze','agent006@gmail.com', '18-DEC-2022', 2014, 4578, 99654);
-INSERT INTO AGENTS VALUES (12458,'Gold','agent007@gmail.com', '21-DEC-2022', 2785, 8856, 87565);
-INSERT INTO AGENTS VALUES (98632,'Bronze','agent008@gmail.com', '26-DEC-2022', 2899, 4535, 56877);
-INSERT INTO AGENTS VALUES (42567,'Silver','agent009@gmail.com', '28-DEC-2022', 2877, 5578, 78654);
-INSERT INTO AGENTS VALUES (45789,'Silver','agent010@gmail.com', '31-DEC-2022', 2568, 9988, 87865);
+INSERT INTO AGENTS VALUES (12456,'Bronze','agent001@gmail.com', 2, 2210, 1357, 54896);
+INSERT INTO AGENTS VALUES (12348,'Gold','agent002@gmail.com', 3, 2209, 4587, 98657);
+INSERT INTO AGENTS VALUES (13457,'Bronze','agent003@gmail.com', 2, 2212, 6586, 48945);
+INSERT INTO AGENTS VALUES (14578,'Silver','agent004@gmail.com', 4, 2211, 2114, 84575);
+INSERT INTO AGENTS VALUES (14698,'Bronze','agent005@gmail.com', 6, 2213, 6897, 48945);
+INSERT INTO AGENTS VALUES (98574,'Bronze','agent006@gmail.com', 5, 2014, 4578, 99654);
+INSERT INTO AGENTS VALUES (12458,'Gold','agent007@gmail.com', 5, 2785, 8856, 87565);
+INSERT INTO AGENTS VALUES (98632,'Bronze','agent008@gmail.com', 4, 2899, 4535, 56877);
+INSERT INTO AGENTS VALUES (42567,'Silver','agent009@gmail.com', 2, 2877, 5578, 78654);
+INSERT INTO AGENTS VALUES (45789,'Silver','agent010@gmail.com', 3, 2568, 9988, 87865);
 
 SELECT * FROM AGENTS;
 
@@ -276,19 +277,53 @@ where VEHICLE_MODEL = 'Sedan';
 select VEHICLE_MODEL, Max_Price, City
 from   VEHICLE
 where City = 'London' OR City = 'Manchester';
-
+c
 -- 3. Show minimum price for London vehicles (from all models) (2 mark)
 select VEHICLE_MODEL, Min_Price, City
 from   VEHICLE
 where City = 'London';
 
 
-select Agents_ID, MAX(Timeslot) as Most_Timeslots
+select Agents_ID, MAX(Num_Timeslot) as Most_Timeslots
 from AGENTS
+WHERE Num_Timeslot = 6
 GROUP BY Agents_ID;
 
+select Customer_ID, MAX(Booked_Timeslots) as Most_Booked_Timeslots
+from Customer
+WHERE Booked_Timeslots = 6
+GROUP BY Customer_ID;
 
-SELECT AVG(Actual_Price) as avg_price, Vehicle_Model, City
-FROM Vehicle;
+
+
+SELECT round(AVG(Actual_Price) , 2) as avg_price, Vehicle_Model
+FROM Vehicle
 -- Where Actual_Price > AVG(Actual_Price)
 GROUP BY Vehicle_Model;
+
+UPDATE Vehicle
+SET Actual_Price = (80)
+WHERE City = 'London' OR City = 'Manchester';
+
+SELECT Distinct Vehicle_Model, City, Actual_Price
+FROM VEHICLE
+WHERE City = 'London' OR City = 'Manchester';
+
+
+SELECT  max(Max_Price), Agent_Rank
+FROM Vehicle
+WHERE Agent_Rank = 'Gold' OR Agent_Rank = 'Bronze'
+GROUP BY Agent_Rank;
+
+DROP TRIGGER DeleteCustomerRecord;
+
+CREATE TRIGGER DeleteCustomerRecord
+AFTER DELETE ON CUSTOMER
+FOR EACH ROW
+ WHEN (NEW.Booked_Timeslots = 0)
+BEGIN
+DELETE FROM CUSTOMER;
+END;
+
+
+-- SELECT * FROM CUSTOMER;
