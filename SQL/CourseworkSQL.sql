@@ -42,22 +42,21 @@ CREATE TABLE ORDERS
     Order_ID NUMBER(10) NOT NULL,
     OrderDate DATE,
     Order_type VARCHAR (255),
-    Timeslot NUMBER (5),
     Customer_ID Number(10),
     Agents_ID Number(10),
     PRIMARY KEY (Order_ID)
 );
 
-INSERT INTO ORDERS VALUES (0000,'21-NOV-2022','Rent', 72, 2209, 14698);
-INSERT INTO ORDERS VALUES (0001,'21-OCT-2022','Buy', 48, 2210, 14578);
-INSERT INTO ORDERS VALUES (0002,'22-DEC-2022','Rent', 88, 2211, 13457);
-INSERT INTO ORDERS VALUES (0003,'22-NOV-2022','Rent', 24, 2212, 12348);
-INSERT INTO ORDERS VALUES (0004,'23-SEP-2022','Buy', 180, 2213, 12458);
-INSERT INTO ORDERS VALUES (0005,'12-OCT-2022','Rent', 72, 2014, 45789);
-INSERT INTO ORDERS VALUES (0006,'31-OCT-2022','Buy', 48, 2785, 42567);
-INSERT INTO ORDERS VALUES (0008,'14-NOV-2022','Rent', 24, 2899, 98632);
-INSERT INTO ORDERS VALUES (0009,'23-SEP-2022','Buy', 180, 2877, 12456);
-INSERT INTO ORDERS VALUES (0010,'22-DEC-2022','Rent', 24, 2568, 98574);
+INSERT INTO ORDERS VALUES (0000,'21-NOV-2022','Rent', 2209, 14698);
+INSERT INTO ORDERS VALUES (0001,'21-OCT-2022','Buy', 2209, 14698);
+INSERT INTO ORDERS VALUES (0002,'22-DEC-2022','Rent', 2209, 14698);
+INSERT INTO ORDERS VALUES (0003,'22-NOV-2022','Rent', 2212, 14698);
+INSERT INTO ORDERS VALUES (0004,'23-SEP-2022','Buy', 2213, 12458);
+INSERT INTO ORDERS VALUES (0005,'12-OCT-2022','Rent', 2213, 45789);
+INSERT INTO ORDERS VALUES (0006,'31-OCT-2022','Buy', 2785, 45789);
+INSERT INTO ORDERS VALUES (0008,'14-NOV-2022','Rent', 2899, 98632);
+INSERT INTO ORDERS VALUES (0009,'23-SEP-2022','Buy', 2877, 98574);
+INSERT INTO ORDERS VALUES (0010,'22-DEC-2022','Rent', 2899, 98574);
 
 SELECT * FROM ORDERS;
 
@@ -237,6 +236,11 @@ ADD CONSTRAINT age_bra_rel
 FOREIGN KEY (Branch_ID)
 REFERENCES BRANCH(Branch_ID);
 
+-- ALTER TABLE AGENTS
+-- ADD CONSTRAINT age_ord_rel
+-- FOREIGN KEY (Order_ID)
+-- REFERENCES ORDERS(Order_ID);
+
 ALTER TABLE ORDERS
 ADD CONSTRAINT ord_cust_rel
 FOREIGN KEY (Customer_ID)
@@ -274,7 +278,7 @@ from   VEHICLE
 where VEHICLE_MODEL = 'Sedan';
 
 -- 2. Show largest of price value from all models associated to London and Manchester
-select VEHICLE_MODEL, Max_Price, City
+select DISTINCT VEHICLE_MODEL, Max_Price, City
 from   VEHICLE
 where City = 'London' OR City = 'Manchester';
 c
@@ -283,24 +287,12 @@ select VEHICLE_MODEL, Min_Price, City
 from   VEHICLE
 where City = 'London';
 
-
-select Agents_ID, MAX(Num_Timeslot) as Most_Timeslots
-from AGENTS
-WHERE Num_Timeslot = 6
-GROUP BY Agents_ID;
-
-select Customer_ID, MAX(Booked_Timeslots) as Most_Booked_Timeslots
-from Customer
-WHERE Booked_Timeslots = 6
-GROUP BY Customer_ID;
-
-
-
+-- 6
 SELECT round(AVG(Actual_Price) , 2) as avg_price, Vehicle_Model
 FROM Vehicle
 -- Where Actual_Price > AVG(Actual_Price)
 GROUP BY Vehicle_Model;
-
+-- 7
 UPDATE Vehicle
 SET Actual_Price = (80)
 WHERE City = 'London' OR City = 'Manchester';
@@ -308,22 +300,40 @@ WHERE City = 'London' OR City = 'Manchester';
 SELECT Distinct Vehicle_Model, City, Actual_Price
 FROM VEHICLE
 WHERE City = 'London' OR City = 'Manchester';
+-- 8
+select VEHICLE_MODEL, max(Max_Price), Agent_Rank
+from   VEHICLE
+GROUP BY VEHICLE_MODEL, Agent_Rank;
 
-
-SELECT  max(Max_Price), Agent_Rank
-FROM Vehicle
-WHERE Agent_Rank = 'Gold' OR Agent_Rank = 'Bronze'
-GROUP BY Agent_Rank;
-
+-- 9
 DROP TRIGGER DeleteCustomerRecord;
 
 CREATE TRIGGER DeleteCustomerRecord
-AFTER DELETE ON CUSTOMER
+BEFORE DELETE ON CUSTOMER
 FOR EACH ROW
  WHEN (NEW.Booked_Timeslots = 0)
 BEGIN
 DELETE FROM CUSTOMER;
 END;
+-- 4
+SELECT Agents_ID, COUNT(Agents_ID) AS timeslots
+FROM  ORDERS
+WHERE OrderDate > '20-OCT-2022' 
+GROUP BY Agents_ID
+HAVING COUNT(Agents_ID) = (SELECT max(COUNT(Agents_ID))
+                            FROM ORDERS
+                            GROUP BY Agents_ID
+                            );
+-- 5
+SELECT Customer_ID, COUNT(Customer_ID) AS bookings
+FROM  ORDERS
+WHERE OrderDate > '20-OCT-2022'
+GROUP BY Customer_ID
+HAVING COUNT(Customer_ID) = (SELECT max(COUNT(Customer_ID))
+                            FROM ORDERS
+                            GROUP BY Customer_ID
+                            );
+
 
 
 -- SELECT * FROM CUSTOMER;
