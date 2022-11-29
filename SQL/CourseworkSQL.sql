@@ -177,14 +177,6 @@ INSERT INTO VEHICLE VALUES (5578, 'Coupe', 1050.50, 12800.00, 2200.00, '06-FEB-2
 INSERT INTO VEHICLE VALUES (9988, 'Sedan', 899.20, 11200.00, 550.00, '08-MAR-2010', 'Birmingham', 'Gold', 87865);
 
 
-
-
-
--- select VEHICLE.VEHICLE_MODEL, VEHICLE.MAX_PRICE, BRANCH.CITY
--- from   VEHICLE, Branch
--- where BRANCH.City = 'London' or BRANCH.City = 'MANCHESTER';
-
-
 CREATE TABLE AGENTS (
     Agents_ID Number(10),
     Agents_Rank VARCHAR(10),
@@ -209,42 +201,54 @@ INSERT INTO AGENTS VALUES (45789,'Silver','agent010@gmail.com', 3, 2568, 9988, 8
 
 SELECT * FROM AGENTS;
 
+CREATE TABLE DELETEDCUSTOMER (
+    Customer_ID NUMBER(10),
+    -- FirstName VARCHAR(255),
+    Booked_Timeslots Number(4)
+);
 
+
+
+ALTER TABLE DELETEDCUSTOMER
+ADD CONSTRAINT del_cus_rel
+FOREIGN KEY (Customer_ID)
+REFERENCES CUSTOMER(Customer_ID)
+ON DELETE SET NULL;;
 
 ALTER TABLE CUSTOMER
 ADD CONSTRAINT cus_age_rel
 FOREIGN KEY (Agents_ID)
-REFERENCES AGENTS(Agents_ID);
+REFERENCES AGENTS(Agents_ID)
+ON DELETE SET NULL;;
 
 ALTER TABLE CUSTOMER
 ADD CONSTRAINT cus_boo_rel
 FOREIGN KEY (Booking_ID)
-REFERENCES BOOKING(Booking_ID);
+REFERENCES BOOKING(Booking_ID)
+ON DELETE SET NULL;;
 
 ALTER TABLE BOOKING
 ADD CONSTRAINT boo_cust_rel
 FOREIGN KEY (Customer_ID)
-REFERENCES CUSTOMER(Customer_ID);
+REFERENCES CUSTOMER(Customer_ID)
+ON DELETE SET NULL;;
 
 ALTER TABLE AGENTS
 ADD CONSTRAINT age_cus_rel
 FOREIGN KEY (Customer_ID)
-REFERENCES CUSTOMER(Customer_ID);
+REFERENCES CUSTOMER(Customer_ID)
+ON DELETE SET NULL;;
 
 ALTER TABLE AGENTS
 ADD CONSTRAINT age_bra_rel
 FOREIGN KEY (Branch_ID)
 REFERENCES BRANCH(Branch_ID);
 
--- ALTER TABLE AGENTS
--- ADD CONSTRAINT age_ord_rel
--- FOREIGN KEY (Order_ID)
--- REFERENCES ORDERS(Order_ID);
-
 ALTER TABLE ORDERS
 ADD CONSTRAINT ord_cust_rel
 FOREIGN KEY (Customer_ID)
-REFERENCES CUSTOMER(Customer_ID);
+REFERENCES CUSTOMER(Customer_ID)
+ON DELETE SET NULL;;
 
 ALTER TABLE ORDERS
 ADD CONSTRAINT ord_age_rel
@@ -264,7 +268,8 @@ REFERENCES BRANCH(Branch_ID);
 ALTER TABLE CARINSURANCE
 ADD CONSTRAINT car_cust_rel
 FOREIGN KEY (Customer_ID)
-REFERENCES CUSTOMER(Customer_ID);
+REFERENCES CUSTOMER(Customer_ID)
+ON DELETE SET NULL;;
 
 ALTER TABLE CARINSURANCE
 ADD CONSTRAINT car_veh_rel
@@ -287,34 +292,6 @@ select VEHICLE_MODEL, Min_Price, City
 from   VEHICLE
 where City = 'London';
 
--- 6
-SELECT round(AVG(Actual_Price) , 2) as avg_price, Vehicle_Model
-FROM Vehicle
--- Where Actual_Price > AVG(Actual_Price)
-GROUP BY Vehicle_Model;
--- 7
-UPDATE Vehicle
-SET Actual_Price = (80)
-WHERE City = 'London' OR City = 'Manchester';
-
-SELECT Distinct Vehicle_Model, City, Actual_Price
-FROM VEHICLE
-WHERE City = 'London' OR City = 'Manchester';
--- 8
-select VEHICLE_MODEL, max(Max_Price), Agent_Rank
-from   VEHICLE
-GROUP BY VEHICLE_MODEL, Agent_Rank;
-
--- 9
-DROP TRIGGER DeleteCustomerRecord;
-
-CREATE TRIGGER DeleteCustomerRecord
-BEFORE DELETE ON CUSTOMER
-FOR EACH ROW
- WHEN (NEW.Booked_Timeslots = 0)
-BEGIN
-DELETE FROM CUSTOMER;
-END;
 -- 4
 SELECT Agents_ID, COUNT(Agents_ID) AS timeslots
 FROM  ORDERS
@@ -334,6 +311,47 @@ HAVING COUNT(Customer_ID) = (SELECT max(COUNT(Customer_ID))
                             GROUP BY Customer_ID
                             );
 
+-- 6
+SELECT round(AVG(Actual_Price) , 2) as avg_price, Vehicle_Model
+FROM Vehicle
+-- Where Actual_Price > AVG(Actual_Price)
+GROUP BY Vehicle_Model;
+-- 7
+UPDATE Vehicle
+SET Actual_Price = (80)
+WHERE City = 'London' OR City = 'Manchester';
+
+SELECT Distinct Vehicle_Model, City, Actual_Price
+FROM VEHICLE
+WHERE City = 'London' OR City = 'Manchester';
+-- 8
+select VEHICLE_MODEL, max(Max_Price), Agent_Rank
+from   VEHICLE
+GROUP BY VEHICLE_MODEL, Agent_Rank;
 
 
--- SELECT * FROM CUSTOMER;
+-- 9
+
+UPDATE CUSTOMER
+SET Booked_Timeslots = 0
+WHERE Customer_ID = 2211;
+
+
+SELECT * FROM DELETEDCUSTOMER;
+
+DELETE FROM CUSTOMER
+WHERE Booked_Timeslots = 0;
+SELECT * FROM CUSTOMER;
+
+
+DROP TRIGGER DeleteCustomerRecord;
+
+CREATE OR REPLACE TRIGGER DeleteCustomerRecord
+AFTER UPDATE ON CUSTOMER
+REFERENCING OLD AS OLD NEW AS NEW
+FOR EACH ROW
+ WHEN (NEW.Booked_Timeslots = 0)
+BEGIN
+INSERT INTO DELETEDCUSTOMER(Customer_ID, Booked_Timeslots)
+VALUES (:NEW.Customer_ID, :NEW.Booked_Timeslots);
+END;
