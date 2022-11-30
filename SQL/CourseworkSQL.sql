@@ -167,14 +167,14 @@ CREATE TABLE VEHICLE (
 
 INSERT INTO VEHICLE VALUES (6897, 'Sedan', 920.99, 13000.00, 2200.00, '14-JUN-2002', 'London', 'Bronze', 84575);
 INSERT INTO VEHICLE VALUES (6586, 'Coupe', 1200.25, 15650.60, 3600.00, '22-MAY-2009', 'Birmingham', 'Gold', 98657);
-INSERT INTO VEHICLE VALUES (2114, 'Sedan', 1000.00, 12900.99, 2900.00, '16-OCT-2012', 'Manchester', 'Bronze', 54896);
-INSERT INTO VEHICLE VALUES (4587, 'Coupe', 1150.50, 14000.00, 5200.00, '02-FEB-2018', 'London', 'Bronze', 48945);
+INSERT INTO VEHICLE VALUES (2114, 'SUV', 1000.00, 12900.99, 2900.00, '16-OCT-2012', 'Manchester', 'Bronze', 54896);
+INSERT INTO VEHICLE VALUES (4587, 'Crossover', 1150.50, 14000.00, 5200.00, '02-FEB-2018', 'London', 'Bronze', 48945);
 INSERT INTO VEHICLE VALUES (1357, 'Sedan', 950.20, 12800.00, 2650.00, '12-MAR-2010', 'Birmingham', 'Gold', 23545);
-INSERT INTO VEHICLE VALUES (4578, 'Sedan', 880.99, 11000.00, 1500.00, '22-JUN-2002', 'London', 'Bronze', 99654);
+INSERT INTO VEHICLE VALUES (4578, 'Pickup', 880.99, 11000.00, 1500.00, '22-JUN-2002', 'London', 'Bronze', 99654);
 INSERT INTO VEHICLE VALUES (8856, 'Coupe', 780.25, 12000.60, 1400.00, '14-MAY-2009', 'Birmingham', 'Bronze', 87565);
-INSERT INTO VEHICLE VALUES (4535, 'Sedan', 890.00, 12400.99, 2000.00, '02-OCT-2012', 'Manchester', 'Gold', 56877);
-INSERT INTO VEHICLE VALUES (5578, 'Coupe', 1050.50, 12800.00, 2200.00, '06-FEB-2018', 'London', 'Bronze', 78654);
-INSERT INTO VEHICLE VALUES (9988, 'Sedan', 899.20, 11200.00, 550.00, '08-MAR-2010', 'Birmingham', 'Gold', 87865);
+INSERT INTO VEHICLE VALUES (4535, 'Hatchback', 890.00, 12400.99, 2000.00, '02-OCT-2012', 'Manchester', 'Gold', 56877);
+INSERT INTO VEHICLE VALUES (5578, 'Van', 1050.50, 12800.00, 2200.00, '06-FEB-2018', 'London', 'Bronze', 78654);
+INSERT INTO VEHICLE VALUES (9988, 'Van', 899.20, 11200.00, 550.00, '08-MAR-2010', 'Birmingham', 'Gold', 87865);
 
 
 CREATE TABLE AGENTS (
@@ -201,6 +201,24 @@ INSERT INTO AGENTS VALUES (45789,'Silver','agent010@gmail.com', 3, 2568, 9988, 8
 
 SELECT * FROM AGENTS;
 
+CREATE TABLE RECEPTION (
+    Reception_ID Number(10),
+    Booking_ID Number(10),
+    Customer_ID Number(10),
+    PRIMARY KEY (Reception_ID)
+);
+
+INSERT INTO RECEPTION VALUES (70001, 48597484, 2212);
+INSERT INTO RECEPTION VALUES (70002, 32145687, 2014);
+INSERT INTO RECEPTION VALUES (70003, 12345678, 2209);
+INSERT INTO RECEPTION VALUES (70004, 74896753, 2210);
+INSERT INTO RECEPTION VALUES (70005, 12347854, 2213);
+INSERT INTO RECEPTION VALUES (70006, 23456745, 2785);
+INSERT INTO RECEPTION VALUES (70007, 45673642, 2899);
+INSERT INTO RECEPTION VALUES (70008, 12345674, 2877);
+INSERT INTO RECEPTION VALUES (70009, 56753454, 2211);
+INSERT INTO RECEPTION VALUES (70010, 89654357, 2568);
+
 CREATE TABLE DELETEDCUSTOMER (
     Customer_ID NUMBER(10),
     -- FirstName VARCHAR(255),
@@ -213,31 +231,43 @@ ALTER TABLE DELETEDCUSTOMER
 ADD CONSTRAINT del_cus_rel
 FOREIGN KEY (Customer_ID)
 REFERENCES CUSTOMER(Customer_ID)
-ON DELETE SET NULL;;
+ON DELETE SET NULL;
 
 ALTER TABLE CUSTOMER
 ADD CONSTRAINT cus_age_rel
 FOREIGN KEY (Agents_ID)
 REFERENCES AGENTS(Agents_ID)
-ON DELETE SET NULL;;
+ON DELETE SET NULL;
 
 ALTER TABLE CUSTOMER
 ADD CONSTRAINT cus_boo_rel
 FOREIGN KEY (Booking_ID)
 REFERENCES BOOKING(Booking_ID)
-ON DELETE SET NULL;;
+ON DELETE SET NULL;
 
 ALTER TABLE BOOKING
 ADD CONSTRAINT boo_cust_rel
 FOREIGN KEY (Customer_ID)
 REFERENCES CUSTOMER(Customer_ID)
-ON DELETE SET NULL;;
+ON DELETE SET NULL;
+
+ALTER TABLE RECEPTION
+ADD CONSTRAINT rec_cust_rel
+FOREIGN KEY (Customer_ID)
+REFERENCES CUSTOMER(Customer_ID)
+ON DELETE SET NULL;
+
+ALTER TABLE RECEPTION
+ADD CONSTRAINT rec_book_rel
+FOREIGN KEY (Booking_ID)
+REFERENCES BOOKING(Booking_ID)
+ON DELETE SET NULL;
 
 ALTER TABLE AGENTS
 ADD CONSTRAINT age_cus_rel
 FOREIGN KEY (Customer_ID)
 REFERENCES CUSTOMER(Customer_ID)
-ON DELETE SET NULL;;
+ON DELETE SET NULL;
 
 ALTER TABLE AGENTS
 ADD CONSTRAINT age_bra_rel
@@ -248,7 +278,7 @@ ALTER TABLE ORDERS
 ADD CONSTRAINT ord_cust_rel
 FOREIGN KEY (Customer_ID)
 REFERENCES CUSTOMER(Customer_ID)
-ON DELETE SET NULL;;
+ON DELETE SET NULL;
 
 ALTER TABLE ORDERS
 ADD CONSTRAINT ord_age_rel
@@ -269,7 +299,7 @@ ALTER TABLE CARINSURANCE
 ADD CONSTRAINT car_cust_rel
 FOREIGN KEY (Customer_ID)
 REFERENCES CUSTOMER(Customer_ID)
-ON DELETE SET NULL;;
+ON DELETE SET NULL;
 
 ALTER TABLE CARINSURANCE
 ADD CONSTRAINT car_veh_rel
@@ -286,13 +316,13 @@ where VEHICLE_MODEL = 'Sedan';
 select DISTINCT VEHICLE_MODEL, Max_Price, City
 from   VEHICLE
 where City = 'London' OR City = 'Manchester';
-c
--- 3. Show minimum price for London vehicles (from all models) (2 mark)
+
+-- 3. Show minimum price for London vehicles (from all models)
 select VEHICLE_MODEL, Min_Price, City
 from   VEHICLE
 where City = 'London';
 
--- 4
+-- 4. Find Agent who has maximum number of timeslots
 SELECT Agents_ID, COUNT(Agents_ID) AS timeslots
 FROM  ORDERS
 WHERE OrderDate > '20-OCT-2022' 
@@ -301,7 +331,7 @@ HAVING COUNT(Agents_ID) = (SELECT max(COUNT(Agents_ID))
                             FROM ORDERS
                             GROUP BY Agents_ID
                             );
--- 5
+-- 5. Find customer which booked the maximum number of timeslots
 SELECT Customer_ID, COUNT(Customer_ID) AS bookings
 FROM  ORDERS
 WHERE OrderDate > '20-OCT-2022'
@@ -311,40 +341,43 @@ HAVING COUNT(Customer_ID) = (SELECT max(COUNT(Customer_ID))
                             GROUP BY Customer_ID
                             );
 
--- 6
-SELECT round(AVG(Actual_Price) , 2) as avg_price, Vehicle_Model
+-- 6. Show all models having price higher than average for model in Birmingham
+SELECT round(AVG(Actual_Price) , 2) as avg_price, Vehicle_Model, City
 FROM Vehicle
--- Where Actual_Price > AVG(Actual_Price)
-GROUP BY Vehicle_Model;
--- 7
+Where City = 'Birmingham'
+GROUP BY Vehicle_Model, City;
+
+
+-- 7. Update the price for all models, for London and Manchester, for today, assuming they want to give offer of 80 GBP per vehicle
 UPDATE Vehicle
 SET Actual_Price = (80)
 WHERE City = 'London' OR City = 'Manchester';
-
 SELECT Distinct Vehicle_Model, City, Actual_Price
 FROM VEHICLE
 WHERE City = 'London' OR City = 'Manchester';
--- 8
+
+--8 Show the maximum price sold from all Gold and Bronze Agents, for all models
 select VEHICLE_MODEL, max(Max_Price), Agent_Rank
 from   VEHICLE
 GROUP BY VEHICLE_MODEL, Agent_Rank;
 
 
--- 9
-
+-- 9. Trigger: Create a trigger which places the customers, which have been deleted into a
+-- customer table. This allows records to be maintained while improving query times for existing
+-- customers.
 UPDATE CUSTOMER
 SET Booked_Timeslots = 0
 WHERE Customer_ID = 2211;
 
 
-SELECT * FROM DELETEDCUSTOMER;
+-- SELECT * FROM DELETEDCUSTOMER;
 
-DELETE FROM CUSTOMER
-WHERE Booked_Timeslots = 0;
-SELECT * FROM CUSTOMER;
+-- DELETE FROM CUSTOMER
+-- WHERE Booked_Timeslots = 0;
+-- SELECT * FROM CUSTOMER;
 
 
-DROP TRIGGER DeleteCustomerRecord;
+-- DROP TRIGGER DeleteCustomerRecord;
 
 CREATE OR REPLACE TRIGGER DeleteCustomerRecord
 AFTER UPDATE ON CUSTOMER
