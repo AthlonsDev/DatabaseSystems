@@ -25,7 +25,7 @@ CREATE TABLE CUSTOMER
 INSERT INTO CUSTOMER VALUES (2209,'Amaya','Lucero','AmayaR@gmail.com','Newham Way',074589645, 5, 14698, 12347854);
 INSERT INTO CUSTOMER VALUES (2210,'Frankie','Decker','Frankie@gmail.com','Abbey Road',07458965, 2, 14578, 74896753);
 INSERT INTO CUSTOMER VALUES (2211,'MATTEW','ROUGHTON','MattR@gmail.com','Powis Street',0748665, 1, 13457, 48597484);
-INSERT INTO CUSTOMER VALUES (2212,'NOAH','JOHNSON','NJohnson@gmil.com','brighton road',04576455, 0, 12348, 12345678);
+INSERT INTO CUSTOMER VALUES (2212,'NOAH','JOHNSON','NJohnson@gmil.com','brighton road',04576455, 2, 12348, 12345678);
 INSERT INTO CUSTOMER VALUES (2213,'XIAO','MINN','XMing@gmail.com','Penny Lane',04578452, 4, 45789, 32145687);
 INSERT INTO CUSTOMER VALUES (2014,'Mehmet ','Larson','MehmetL@gmail.com','Twickenahm Way',07457897, 5, 42567, 23456745);
 INSERT INTO CUSTOMER VALUES (2785,'Lorraine ','Brown','LorrBrown@gmail.com','Saville Row',07785545, 6, 98632, 45673642);
@@ -81,12 +81,12 @@ INSERT INTO BOOKING VALUES (89654357, 2568);
 
 CREATE TABLE RESERVATION
 (  Reservation_ID NUMBER (10) NOT NULL,
-   Booking_Status VARCHAR (255),
-   From_Date DATE,
-   Return_Date DATE,
-   Actual_Return_Date DATE,
-   Amounts NUMBER (6, 2),
-   PRIMARY KEY (Reservation_ID)
+  Booking_Status VARCHAR (255),
+  From_Date DATE,
+  Return_Date DATE,
+  Actual_Return_Date DATE,
+  Amounts NUMBER (6, 2),
+  PRIMARY KEY (Reservation_ID)
 );
 
 INSERT INTO RESERVATION VALUES (98765464, 'Booked', '14-NOV-2022', '22-DEC-2022', NULL, 850.55);
@@ -366,11 +366,11 @@ GROUP BY VEHICLE_MODEL, Agent_Rank;
 -- customer table. This allows records to be maintained while improving query times for existing
 -- customers.
 UPDATE CUSTOMER
-SET Booked_Timeslots = 0
-WHERE Customer_ID = 2211;
+SET Booked_Timeslots= Booked_Timeslots - 1;
+-- WHERE Customer_ID = 2211;
 
 
--- SELECT * FROM DELETEDCUSTOMER;
+SELECT * FROM DELETEDCUSTOMER;
 
 -- DELETE FROM CUSTOMER
 -- WHERE Booked_Timeslots = 0;
