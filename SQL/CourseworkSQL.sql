@@ -406,7 +406,6 @@ GROUP BY VEHICLE_MODEL, Agent_Rank;
 SELECT SUM(Max_Price), Agent_Rank
 from   VEHICLE, ORDERS
 WHERE Agent_Rank != 'Silver'
-ORDER BY Agents_ID
 GROUP BY Agent_Rank;
 
 
@@ -434,9 +433,3 @@ BEGIN
 INSERT INTO DELETEDCUSTOMER(Customer_ID, Booked_Timeslots)
 VALUES (:NEW.Customer_ID, :NEW.Booked_Timeslots);
 END;
-
-
-
-
-
-
