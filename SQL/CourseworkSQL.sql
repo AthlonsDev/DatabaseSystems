@@ -1,10 +1,12 @@
--- DROP TABLE AGENTS;
--- DROP TABLE ORDERS;
--- DROP TABLE CUSTOMER;
--- DROP TABLE BOOKING;
--- DROP TABLE BRANCH;
--- DROP TABLE CARINSURANCE;
--- DROP TABLE RESERVATION;
+-- -- DROP TABLE AGENTS;
+-- -- DROP TABLE ORDERS;
+-- -- DROP TABLE CUSTOMER;
+-- -- DROP TABLE BOOKING;
+-- -- DROP TABLE BRANCH;
+-- -- DROP TABLE CARINSURANCE;
+-- -- DROP TABLE RESERVATION;
+
+
 CREATE TABLE BOOKING
 (   Booking_ID NUMBER(10),
     Customer_ID NUMBER(10),
@@ -48,7 +50,6 @@ CREATE TABLE BRANCH (
 
 CREATE TABLE DELETEDCUSTOMER (
     Customer_ID NUMBER(10),
-    -- FirstName VARCHAR(255),
     Booked_Timeslots Number(4)
 );
 
@@ -101,6 +102,8 @@ CREATE TABLE AGENTS (
     Branch_ID Number(10),
     PRIMARY KEY (Agents_ID)
 );
+
+
 INSERT INTO CUSTOMER VALUES (2209,'Amaya','Lucero','AmayaR@gmail.com','Newham Way',074589645, 3, 14698, 12347854);
 INSERT INTO CUSTOMER VALUES (2210,'Frankie','Decker','Frankie@gmail.com','Abbey Road',07458965, 2, 14578, 74896753);
 INSERT INTO CUSTOMER VALUES (2211,'MATTEW','ROUGHTON','MattR@gmail.com','Powis Street',0748665, 1, 13457, 48597484);
@@ -109,7 +112,7 @@ INSERT INTO CUSTOMER VALUES (2213,'XIAO','MINN','XMing@gmail.com','Penny Lane',0
 INSERT INTO CUSTOMER VALUES (2014,'Mehmet ','Larson','MehmetL@gmail.com','Twickenahm Way',07457897, 5, 42567, 23456745);
 INSERT INTO CUSTOMER VALUES (2785,'Lorraine ','Brown','LorrBrown@gmail.com','Saville Row',07785545, 6, 98632, 45673642);
 INSERT INTO CUSTOMER VALUES (2899,'Rhea ','Zunica','Rhea@gmail.com','Chicksand Street',07458245, 3, 12456, 12345674);
-INSERT INTO CUSTOMER VALUES (2877,'Louie','Richmond','Louie@gmil.com','Artillery Lane',07856897, 2, 12458, 56753454);
+INSERT INTO CUSTOMER VALUES (2877,'Louie','Richmond',NULL,'Artillery Lane',07856897, 2, 12458, 56753454);
 INSERT INTO CUSTOMER VALUES (2568,'Kristen ','Ashley','Krist@gmail.com','Gresham Street',0124578, 5, 98574, 89654357);
 
 
@@ -236,7 +239,7 @@ SELECT * FROM BRANCH;
 
 
 
-
+-- Foreign keys are all created as constraints
 ALTER TABLE DELETEDCUSTOMER
 ADD CONSTRAINT del_cus_rel
 FOREIGN KEY (Customer_ID)
@@ -316,23 +319,32 @@ ADD CONSTRAINT car_veh_rel
 FOREIGN KEY (Vehicle_ID)
 REFERENCES VEHICLE(Vehicle_ID);
 
+-- CHECKS THAT ALL THE DATES IN ORDERS ARE NOT IN THE PAST - AFTER 20-OCT
 ALTER TABLE ORDERS
 ADD CONSTRAINT CHK_ORD_DAT CHECK (OrderDate>='20-OCT-2022');
 
+-- CHECKS ALL NAMES DO NOT HAVE NUMBERS
 ALTER TABLE CUSTOMER
 ADD CONSTRAINT CHK_NME_CUS CHECK(FirstName NOT LIKE '%[0-9]%');
-
+-- SAME FOR LAST NAME
 ALTER TABLE CUSTOMER
 ADD CONSTRAINT CHK_LST_CUS CHECK(LastName NOT LIKE '%[0-9]%');
 
+-- CHECKS EMAIL HAS THE @ SYMBOL
 ALTER TABLE CUSTOMER
 ADD CONSTRAINT CHK_EMA_CUS CHECK (Email LIKE '%@%');
 
 ALTER TABLE AGENTS
 ADD CONSTRAINT CHK_EMA_AGE CHECK (Email LIKE '%@%');
 
-
-
+-- If Email is NULL it will be automatically replace by unknown@gmail.com
+SELECT NVL(Email, 'unknown@gmail.com')
+FROM CUSTOMER;
+SELECT NVL(Email, 'unknown@gmail.com')
+FROM AGENTS;
+   
+-- SELECT NVL(Agents_Rank, 'Gold')
+-- FROM AGENTS;
 
 -- 1.Show current price of Sedan in all the Cities
 select VEHICLE_MODEL, Actual_Price, City
@@ -357,6 +369,7 @@ HAVING COUNT(Agents_ID) = (SELECT max(COUNT(Agents_ID))
                             FROM ORDERS
                             GROUP BY Agents_ID
                             );
+                            
 -- 5. Find customer which booked the maximum number of timeslots
 SELECT Customer_ID, COUNT(Customer_ID) AS bookings
 FROM  ORDERS
@@ -381,6 +394,8 @@ SELECT Distinct Vehicle_Model, City, Actual_Price
 FROM VEHICLE
 WHERE City = 'London' OR City = 'Manchester';
 
+
+
 --8 Show the maximum price sold from all Gold and Bronze Agents, for all models
 select VEHICLE_MODEL, max(Max_Price), Agent_Rank
 from   VEHICLE
@@ -388,28 +403,28 @@ WHERE Agent_Rank != 'Silver'
 GROUP BY VEHICLE_MODEL, Agent_Rank;
 
 -- If summing all sales regardless of car models
-select SUM(Max_Price), Agent_Rank
-from   VEHICLE
+SELECT SUM(Max_Price), Agent_Rank
+from   VEHICLE, ORDERS
 WHERE Agent_Rank != 'Silver'
+ORDER BY Agents_ID
 GROUP BY Agent_Rank;
 
 
+-- -- 9. Trigger: Create a trigger which places the customers, which have been deleted into a
+-- -- customer table. This allows records to be maintained while improving query times for existing
+-- -- customers.
+-- -- UPDATE CUSTOMER
+-- -- SET Booked_Timeslots= Booked_Timeslots - 1;
+
+-- -- SELECT * FROM DELETEDCUSTOMER;
+
+-- -- DELETE FROM CUSTOMER
+-- -- WHERE Booked_Timeslots = 0;
+-- -- SELECT * FROM CUSTOMER;
 
 
--- 9. Trigger: Create a trigger which places the customers, which have been deleted into a
--- customer table. This allows records to be maintained while improving query times for existing
--- customers.
--- UPDATE CUSTOMER
--- SET Booked_Timeslots= Booked_Timeslots - 1;
+-- -- DROP TRIGGER DeleteCustomerRecord;
 
--- SELECT * FROM DELETEDCUSTOMER;
-
--- DELETE FROM CUSTOMER
--- WHERE Booked_Timeslots = 0;
--- SELECT * FROM CUSTOMER;
-
-
--- DROP TRIGGER DeleteCustomerRecord;
 CREATE OR REPLACE TRIGGER DeleteCustomerRecord
 AFTER UPDATE ON CUSTOMER
 REFERENCING OLD AS OLD NEW AS NEW
@@ -420,19 +435,8 @@ INSERT INTO DELETEDCUSTOMER(Customer_ID, Booked_Timeslots)
 VALUES (:NEW.Customer_ID, :NEW.Booked_Timeslots);
 END;
 
--- DECLARE
---   Email VARCHAR(255) NULL;
 
--- BEGIN
--- DBMS_OUTPUT.ENABLE;
 
--- SELECT FirstName INTO Email
--- FROM CUSTOMER;
 
--- -- DBMS_OUTPUT.PUT_LINE(Email);  
 
---     if Email IS NULL THEN
---     -- DBMS_OUTPUT.PUT_LINE('Email is empty');
---     Email = 'Unknown@gmail.com'
---     end if;
--- end; 
+
